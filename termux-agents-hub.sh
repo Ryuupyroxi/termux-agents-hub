@@ -96,8 +96,8 @@ ui_header() {
   clear
   printf '\n'
   printf '  %s╔══════════════════════════════════════════════════╗%s\n' "${CYAN}" "${RST}"
-  printf '  %s║%s  %s%-48s%s %s║%s\n' "${CYAN}" "${RST}" "${BOLD}" "$1" "${RST}" "${CYAN}"
-  printf '  %s║%s  %s%-48s%s %s║%s\n' "${CYAN}" "${RST}" "${DIM}" "${NAME} v${VERSION} — AI Agent Manager" "${RST}" "${CYAN}"
+  printf '  %s║%s  %s%-48s%s %s║%s\n' "${CYAN}" "${RST}" "${BOLD}" "$1" "${RST}" "${CYAN}" "${RST}"
+  printf '  %s║%s  %s%-48s%s %s║%s\n' "${CYAN}" "${RST}" "${DIM}" "${NAME} v${VERSION} — AI Agent Manager" "${RST}" "${CYAN}" "${RST}"
   printf '  %s╚══════════════════════════════════════════════════╝%s\n' "${CYAN}" "${RST}"
 }
 
@@ -205,12 +205,13 @@ release_wake_lock() {
 
 # ── Network Helpers ───────────────────────────────────────────────────────────
 get_ip() {
+  local ip=""
   if command -v ifconfig >/dev/null 2>&1; then
-    ifconfig 2>/dev/null | grep -oE 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | awk '{print $2}' | head -1
+    ip=$(ifconfig 2>/dev/null | grep -oE 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | awk '{print $2}' | head -1)
   else
-    ip addr 2>/dev/null | grep -oE 'inet ([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | awk '{print $2}' | head -1
+    ip=$(ip addr 2>/dev/null | grep -oE 'inet ([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | awk '{print $2}' | head -1)
   fi
-  echo "${LOCAL_IP:-$(hostname -I 2>/dev/null | awk '{print $1}' || echo '127.0.0.1')}"
+  echo "${ip:-${LOCAL_IP:-$(hostname -I 2>/dev/null | awk '{print $1}' || echo '127.0.0.1')}}"
 }
 
 is_port_free() {
