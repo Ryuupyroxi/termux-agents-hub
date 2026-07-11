@@ -54,12 +54,19 @@ A single-file bash script that installs, configures, launches, and manages AI co
 
 ## Quick Start
 
-```bash
-# Install dependencies
-pkg update && pkg install nodejs python git curl termux-api
+**One-liner install (copy & paste into Termux):**
 
-# Download and run
-curl -O https://raw.githubusercontent.com/Ryuupyroxi/termux-agents-hub/main/termux-agents-hub.sh
+```bash
+curl -fsSL https://raw.githubusercontent.com/Ryuupyroxi/termux-agents-hub/main/install.sh | bash
+```
+
+This installs all dependencies (nodejs, python, git, curl, termux-api), downloads the script, and launches the menu.
+
+**Manual install:**
+
+```bash
+pkg update && pkg install nodejs python git curl termux-api
+curl -fsSL -O https://raw.githubusercontent.com/Ryuupyroxi/termux-agents-hub/main/termux-agents-hub.sh
 chmod +x termux-agents-hub.sh
 ./termux-agents-hub.sh
 ```
