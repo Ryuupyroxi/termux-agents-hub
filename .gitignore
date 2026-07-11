@@ -1,0 +1,6 @@
+*.log
+*.tmp
+*.bak
+*.orig
+config.env
+keys.env
