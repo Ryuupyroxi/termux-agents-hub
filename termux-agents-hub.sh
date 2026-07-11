@@ -1898,6 +1898,15 @@ trap cleanup EXIT
 # ═══════════════════════════════════════════════════════════════════════════════
 
 main() {
+  # Verify critical functions loaded (catches silent parse failures on some bash versions)
+  for _fn in install_menu launch_menu health_monitor show_tools_menu settings              backup_restore_menu run_migration diagnostics show_history              resolve_ports load_config save_config find_free_port; do
+    if ! declare -f "${_fn}" >/dev/null 2>&1; then
+      echo "FATAL: Function ${_fn}() not loaded. Your bash may not support all syntax used."
+      echo "Try: bash -n $(basename "$0") to check, or reinstall from GitHub."
+      exit 1
+    fi
+  done
+
   setup_colors
   setup_logging
   mkdir -p "${CONFIG_DIR}" "${DATA_DIR}" "${STATE_DIR}" "${CACHE_DIR}" "${RUN_DIR}" "${LOG_DIR}"
