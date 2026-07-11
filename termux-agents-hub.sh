@@ -1166,8 +1166,10 @@ health_monitor() {
       if [[ "${was_running}" == "true" ]] && ! agent_running "${pattern}"; then
         printf '  %s│%s  %s✖ %s%s%s %s(CRASHED)%s               %s│%s\n' \
           "${DIM}" "${RST}" "${RED}" "${BOLD}" "${name}" "${RST}" "${RED}" "${RST}" "${RED}" "${DIM}"
-        printf '  %s│%s     %s✖ Process died at $(date +%H:%M:%S)%s             %s│%s\n' \
-          "${DIM}" "${RST}" "${RED}" "${RST}" "${RED}" "${DIM}"
+        local crash_time
+        crash_time=$(date +%H:%M:%S)
+        printf '  %s│%s     %s✖ Process died at %s%s             %s│%s\n' \
+          "${DIM}" "${RST}" "${RED}" "${crash_time}" "${RST}" "${RED}" "${DIM}"
         notify "${name} crashed!"
         tts "Warning: ${name} crashed"
         log_event "CRASH" "${name}" "Process died"
