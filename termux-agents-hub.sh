@@ -1860,7 +1860,7 @@ diagnostics() {
 self_update() {
   info "Checking for updates..."
   local remote_version
-  remote_version=$(curl -s --max-time 10 "https://raw.githubusercontent.com/your-org/termux-agents-hub/main/VERSION" 2>/dev/null | tr -d '[:space:]')
+  remote_version=$(curl -s --max-time 10 "https://raw.githubusercontent.com/Ryuupyroxi/termux-agents-hub/main/VERSION" 2>/dev/null | tr -d '[:space:]')
   if [[ -z "${remote_version}" ]]; then
     warn "Could not check for updates"
     return
@@ -1872,7 +1872,7 @@ self_update() {
     if confirm "Update to v${remote_version}?"; then
       local script_path="${0}"
       if curl -s --max-time 30 -o "${script_path}" \
-        "https://raw.githubusercontent.com/your-org/termux-agents-hub/main/termux-agents-hub.sh" 2>/dev/null; then
+        "https://raw.githubusercontent.com/Ryuupyroxi/termux-agents-hub/main/termux-agents-hub.sh" 2>/dev/null; then
         chmod +x "${script_path}"
         ok "Updated to v${remote_version}. Restart the script."
         exit 0
