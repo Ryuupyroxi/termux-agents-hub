@@ -57,7 +57,7 @@ A single-file bash script that installs, configures, launches, and manages AI co
 **One-liner install (copy & paste into Termux):**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Ryuupyroxi/termux-agents-hub/main/install.sh | bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/Ryuupyroxi/termux-agents-hub/main/install.sh)"
 ```
 
 This installs all dependencies (nodejs, python, git, curl, termux-api), downloads the script, and launches the menu.

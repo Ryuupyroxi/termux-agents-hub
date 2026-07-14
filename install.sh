@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # ═══════════════════════════════════════════════════════════════════
 # termux-agents-hub — One-line Installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/Ryuupyroxi/termux-agents-hub/main/install.sh | bash
+# Usage: bash -c "$(curl -fsSL https://raw.githubusercontent.com/Ryuupyroxi/termux-agents-hub/main/install.sh)"
 # ═══════════════════════════════════════════════════════════════════
 set -euo pipefail
 
@@ -52,14 +52,21 @@ fi
 
 chmod +x "${DEST}"
 
-# Verify
+# Verify and execute
 if [[ -f "${DEST}" ]] && head -1 "${DEST}" | grep -q "bash"; then
   echo ""
   echo "✅ Downloaded and ready: ${DEST}"
   echo ""
   echo "▸ Launching termux-agents-hub..."
   echo ""
-  exec bash "${DEST}" "$@"
+  
+  # Redirect standard input back to the user's terminal (TTY) 
+  # This makes it fully interactive, even if the installer itself was piped!
+  if [ ! -t 0 ]; then
+    exec bash "${DEST}" "$@" </dev/tty
+  else
+    exec bash "${DEST}" "$@"
+  fi
 else
   echo "❌ Download appears corrupted"
   echo "   Expected bash script, got:"
