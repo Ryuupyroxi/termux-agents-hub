@@ -4,7 +4,7 @@
 
 A single-file bash script that installs, configures, launches, and manages AI coding agents on any unrooted Android device via Termux. Zero-friction onboarding — get a free model running in under 2 minutes.
 
-![Version](https://img.shields.io/badge/version-3.0.0-cyan)
+![Version](https://img.shields.io/badge/version-3.0.2-cyan)
 ![Platform](https://img.shields.io/badge/platform-Android%20(Termux)-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
