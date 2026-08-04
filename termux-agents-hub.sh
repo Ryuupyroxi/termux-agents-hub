@@ -405,7 +405,34 @@ quick_connect() {
   printf '  > '; read -r qc
   case "${qc}" in
     c|C) copy_to_clipboard "${url}" ;;
-    o|O) open_in_browser "${url}" ;;
+    o|O)
+      if ! command -v hermes >/dev/null 2>&1 && [[ "${agent}" == "dashboard" || "${agent}" == "api" ]]; then
+        warn "Hermes is not installed yet."
+        if confirm "Install Hermes now?"; then
+          install_hermes && configure_hermes
+        else
+          pause
+          return
+        fi
+      elif [[ "${agent}" == "dashboard" ]] && ! agent_running "hermes.*dashboard"; then
+        warn "Hermes Dashboard is installed but not running."
+        if confirm "Launch it now?"; then
+          launch_hermes_dashboard
+        else
+          pause
+          return
+        fi
+      elif [[ "${agent}" == "api" ]] && ! agent_running "hermes.*serve"; then
+        warn "Hermes API Server is installed but not running."
+        if confirm "Launch it now?"; then
+          launch_hermes_serve
+        else
+          pause
+          return
+        fi
+      fi
+      open_in_browser "${url}"
+      ;;
   esac
 }
 
@@ -1058,11 +1085,11 @@ launch_menu() {
     printf '  %s│%s  %s◆ TOOLS & SKILLS%s                          %s│%s\n' "${DIM}" "${RST}" "${BOLD}" "${RST}" "${DIM}" "${RST}"
     printf '  %s│%b 12)%b  Browse All Tools %s(56)%s                  %s│%s\n' \
       "${DIM}" "${RST}" "${BOLD}${CYAN}" "${RST}" "${DIM}" "${RST}" "${DIM}" "${RST}"
-    printf '  %s│%b 13)%b  Settings                               %s│%s\n' \
       "${DIM}" "${RST}" "${BOLD}${CYAN}" "${RST}" "${DIM}" "${RST}"
     printf '  %s└──────────────────────────────────────────────┘%s\n' "${DIM}" "${RST}"
+    printf '  %s└──────────────────────────────────────────────┘%s\n' "${DIM}" "${RST}"
 
-    printf '\n  %s▸ q:%s Quit  %s▸ 1-13:%s Select\n' "${DIM}" "${RST}" "${DIM}" "${RST}"
+    printf '\n  %s▸ q:%s Quit  %s▸ 1-14:%s Select\n' "${DIM}" "${RST}" "${DIM}" "${RST}"
     footer
 
     printf '  > '; read -r choice
@@ -1112,6 +1139,7 @@ launch_menu() {
       10) show_history ;;
       11) backup_restore_menu ;;
       12) show_tools_menu ;;
+      14) install_all_agents ;;
       13) settings ;;
       q|Q) exit 0 ;;
       *) ;;
