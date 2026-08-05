@@ -1086,7 +1086,10 @@ launch_menu() {
     printf '  %s│%b 12)%b  Browse All Tools %s(56)%s                  %s│%s\n' \
       "${DIM}" "${RST}" "${BOLD}${CYAN}" "${RST}" "${DIM}" "${RST}" "${DIM}" "${RST}"
       "${DIM}" "${RST}" "${BOLD}${CYAN}" "${RST}" "${DIM}" "${RST}"
-    printf '  %s└──────────────────────────────────────────────┘%s\n' "${DIM}" "${RST}"
+    printf '  %s├──────────────────────────────────────────────┤%s\n' "${DIM}" "${RST}"
+    printf '  %s│%s  %s◆ INSTALLATION%s                           %s│%s\n' "${DIM}" "${RST}" "${BOLD}" "${RST}" "${DIM}" "${RST}"
+    printf '  %s│%b 13)%b  Install All Agents (Hermes+Codex+OpenClaw) %s│%s\n' \
+      "${DIM}" "${RST}" "${BOLD}${GREEN}" "${RST}" "${DIM}" "${RST}"
     printf '  %s└──────────────────────────────────────────────┘%s\n' "${DIM}" "${RST}"
 
     printf '\n  %s▸ q:%s Quit  %s▸ 1-14:%s Select\n' "${DIM}" "${RST}" "${DIM}" "${RST}"
@@ -1139,8 +1142,8 @@ launch_menu() {
       10) show_history ;;
       11) backup_restore_menu ;;
       12) show_tools_menu ;;
-      14) install_all_agents ;;
-      13) settings ;;
+      13) install_all_agents ;;
+      14) settings ;;
       q|Q) exit 0 ;;
       *) ;;
     esac
@@ -1628,6 +1631,15 @@ settings_model() {
     sed -i "s|^HERMES_PROVIDER=.*|HERMES_PROVIDER=${PROVIDER}|" "${HERMES_HOME}/.env" 2>/dev/null || true
   fi
   ok "Model updated: ${MODEL}"
+  # Auto-install Hermes if not installed
+  if ! command -v hermes >/dev/null 2>&1; then
+    warn "Hermes not installed. Installing now..."
+    if install_hermes && configure_hermes; then
+      ok "Hermes installed and configured"
+    else
+      error "Failed to install Hermes"
+    fi
+  fi
   check_restart_agents "model"
 }
 
@@ -1996,18 +2008,48 @@ main() {
     --copy-url)
       local agent="${2:-}"
       case "${agent}" in
-        dashboard) copy_to_clipboard "http://$(get_ip):${HERMES_DASH_PORT}" ;;
-        api) copy_to_clipboard "http://$(get_ip):${HERMES_API_PORT}" ;;
-        openclaw) copy_to_clipboard "http://$(get_ip):${OPENCLAW_PORT}" ;;
+        dashboard)
+          if ! command -v hermes >/dev/null 2>&1; then
+            warn "Hermes is not installed. Run install first."
+            exit 1
+          fi
+          copy_to_clipboard "http://$(get_ip):${HERMES_DASH_PORT}" ;;
+        api)
+          if ! command -v hermes >/dev/null 2>&1; then
+            warn "Hermes is not installed. Run install first."
+            exit 1
+          fi
+          copy_to_clipboard "http://$(get_ip):${HERMES_API_PORT}" ;;
+        openclaw)
+          if ! command -v openclaw >/dev/null 2>&1; then
+            warn "OpenClaw is not installed. Run install first."
+            exit 1
+          fi
+          copy_to_clipboard "http://$(get_ip):${OPENCLAW_PORT}" ;;
         *) warn "Usage: $0 --copy-url <dashboard|api|openclaw>" ;;
       esac
       ;;
     --open-url)
       local agent="${2:-}"
       case "${agent}" in
-        dashboard) open_in_browser "http://$(get_ip):${HERMES_DASH_PORT}" ;;
-        api) open_in_browser "http://$(get_ip):${HERMES_API_PORT}" ;;
-        openclaw) open_in_browser "http://$(get_ip):${OPENCLAW_PORT}" ;;
+        dashboard)
+          if ! command -v hermes >/dev/null 2>&1; then
+            warn "Hermes is not installed. Run install first."
+            exit 1
+          fi
+          open_in_browser "http://$(get_ip):${HERMES_DASH_PORT}" ;;
+        api)
+          if ! command -v hermes >/dev/null 2>&1; then
+            warn "Hermes is not installed. Run install first."
+            exit 1
+          fi
+          open_in_browser "http://$(get_ip):${HERMES_API_PORT}" ;;
+        openclaw)
+          if ! command -v openclaw >/dev/null 2>&1; then
+            warn "OpenClaw is not installed. Run install first."
+            exit 1
+          fi
+          open_in_browser "http://$(get_ip):${OPENCLAW_PORT}" ;;
         *) warn "Usage: $0 --open-url <dashboard|api|openclaw>" ;;
       esac
       ;;
